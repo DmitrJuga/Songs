@@ -9,6 +9,7 @@
 #import "Song.h"
 #import "SongsViewController.h"
 #import "SongTableViewCell.h"
+
 #import <MBProgressHUD/MBProgressHUD.h>
 #import "MagicalRecord/MagicalRecord.h"
 
@@ -35,7 +36,8 @@
     self.tableView.tableFooterView = [[UIView alloc] init];
     
     // список песен (начально - из локальной БД)
-    self.songList = [[NSMutableArray alloc] initWithArray:[Song MR_findAll]];
+    NSArray *songs = [Song MR_findAll];
+    self.songList = [[NSMutableArray alloc] initWithArray:songs];
     
     // обновляем с сервера
     self.APIManager = [SongsAPIManager managerWithDelegate:self];
@@ -140,16 +142,22 @@
 
 // получен результат
 - (void)manager:(SongsAPIManager *)manager didSucceedLoadWithData:(NSArray *)data {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    [self.refreshControl endRefreshing];
+    if (self.refreshControl.refreshing) {
+        [self.refreshControl endRefreshing];
+    } else {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    }
+    // слияние списков
     [self mergeSongsFromList:data];
-
 }
 
 // получена ошибка
 - (void)manager:(SongsAPIManager *)manager didFailedLoadWithError:(NSError *)error {
-    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    //[self.refreshControl endRefreshing];
+    if (self.refreshControl.refreshing) {
+        [self.refreshControl endRefreshing];
+    } else {
+        [MBProgressHUD hideHUDForView:self.view animated:YES];
+    }
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Ошибка"
                                                    message:error.localizedDescription
                                                   delegate:nil
