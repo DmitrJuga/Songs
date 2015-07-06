@@ -7,6 +7,8 @@
 //
 
 #import "AppDelegate.h"
+#import "UIKit+AFNetworking.h"
+#import "MagicalRecord/MagicalRecord.h"
 
 @interface AppDelegate ()
 
@@ -16,7 +18,13 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
+    
+    // вкл. системный индикатор сетевой активности
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
+    // инициализация стека CoreData в MagicalRecord
+    [MagicalRecord setupCoreDataStack];
+    
     return YES;
 }
 

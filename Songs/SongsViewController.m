@@ -1,0 +1,169 @@
+//
+//  ViewController.m
+//  Songs
+//
+//  Created by DmitrJuga on 06.07.15.
+//  Copyright (c) 2015 Dmitriy Dolotenko. All rights reserved.
+//
+
+#import "Song.h"
+#import "SongsViewController.h"
+#import "SongTableViewCell.h"
+#import <MBProgressHUD/MBProgressHUD.h>
+#import "MagicalRecord/MagicalRecord.h"
+
+
+@interface SongsViewController ()
+
+@property (strong, nonatomic) SongsAPIManager *APIManager;
+@property (strong, nonatomic) NSMutableArray *songList;
+
+@end
+
+@implementation SongsViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    // настройка pull-to-refresh
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor lightGrayColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(reloadSongs)
+                  forControlEvents:UIControlEventValueChanged];
+
+    self.tableView.tableFooterView = [[UIView alloc] init];
+    
+    // список песен (начально - из локальной БД)
+    self.songList = [[NSMutableArray alloc] initWithArray:[Song MR_findAll]];
+    
+    // обновляем с сервера
+    self.APIManager = [SongsAPIManager managerWithDelegate:self];
+    [self reloadSongs];
+}
+
+
+// запуск загрузки обновления песен с сервера
+- (void)reloadSongs {
+    if (!self.refreshControl.refreshing) {
+        [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    }
+    [self.APIManager loadSongs];
+}
+
+
+// Объединение списков: сохранённых песен и загруженных
+- (void)mergeSongsFromList:(NSArray *)jsonList {
+    
+    NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:jsonList];
+
+    // Сравнение списков
+    NSMutableIndexSet *deleteIndexSet = [[NSMutableIndexSet alloc] init];
+    for (NSUInteger songListIdx = 0; songListIdx < self.songList.count; songListIdx++) {
+        Song *song = self.songList[songListIdx];
+        BOOL isNeedToDelete = YES;
+        for (NSUInteger newListIdx = 0; newListIdx < newList.count; newListIdx++) {
+            NSDictionary *jsonSong = newList[newListIdx];
+            // если песня присутствует в новом списке - удаляем из нового списка, оставляем в основном
+            if (song.id == jsonSong[@"id"]) {
+                [newList removeObjectAtIndex:newListIdx];
+                isNeedToDelete = NO;
+                break;
+            }
+        }
+        // песня не найдена в новом списке - заносим в список на удаление
+        if (isNeedToDelete) {
+            [deleteIndexSet addIndex:songListIdx];
+        }
+    }
+    // удаление
+    // отсутствующие в новом списке песни удаляем из БД и основного списка
+    NSMutableArray *deleteIndexPaths = [[NSMutableArray alloc] initWithCapacity:deleteIndexSet.count];
+    [deleteIndexSet enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
+        Song *song = self.songList[idx];
+        [song MR_deleteEntity];
+        [deleteIndexPaths addObject:[NSIndexPath indexPathForRow:idx inSection:0]];
+    }];
+    [self.songList removeObjectsAtIndexes:deleteIndexSet];
+
+    // добавление
+    // всё что осталось в новом списке - добавляем в БД и в основной список
+    NSMutableArray *insertIndexPaths = [[NSMutableArray alloc] initWithCapacity:newList.count];
+    for (NSDictionary *jsonSong in newList) {
+        Song *song = [Song MR_importFromObject:jsonSong];
+        [self.songList addObject:song];
+        [insertIndexPaths addObject:[NSIndexPath indexPathForRow:self.songList.count - 1 inSection:0]];
+    }
+    
+    if (deleteIndexPaths.count > 0 || insertIndexPaths.count > 0) {
+        // сохранение изменений в БД
+        [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreWithCompletion:nil];
+        
+        // хак!!! задержка для завершения анимации RefreshControl-а, иначе - странные скачки ((
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.4, false);
+        
+        // обновление tableView c анимацией
+        [self.tableView beginUpdates];
+        [self.tableView deleteRowsAtIndexPaths:deleteIndexPaths
+                              withRowAnimation:UITableViewRowAnimationMiddle];
+        [self.tableView insertRowsAtIndexPaths:insertIndexPaths
+                              withRowAnimation:UITableViewRowAnimationMiddle];
+        [self.tableView endUpdates];
+    }
+}
+
+
+#pragma mark UITableViewDataSource
+
+// кол-во строк
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.songList.count;
+}
+
+// содержимое ячейки
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    SongTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SongCell" forIndexPath:indexPath];
+    [cell setupCellForSong:self.songList[indexPath.row]];
+    return cell;
+}
+
+
+#pragma mark UITableViewDelagate
+
+// нажатие на ячейку
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+
+#pragma mark SongsAPIManagerDelegate
+
+// получен результат
+- (void)manager:(SongsAPIManager *)manager didSucceedLoadWithData:(NSArray *)data {
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    [self.refreshControl endRefreshing];
+    [self mergeSongsFromList:data];
+
+}
+
+// получена ошибка
+- (void)manager:(SongsAPIManager *)manager didFailedLoadWithError:(NSError *)error {
+    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    //[self.refreshControl endRefreshing];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Ошибка"
+                                                   message:error.localizedDescription
+                                                  delegate:nil
+                                         cancelButtonTitle:@"OK"
+                                         otherButtonTitles:nil];
+    [alert show];
+}
+
+
+#pragma mark Action Handlers
+
+// обработчик нажатия кнопки Обновить
+- (IBAction)refreshBtnPressed:(id)sender {
+    [self reloadSongs];
+}
+
+@end

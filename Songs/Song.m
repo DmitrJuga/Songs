@@ -1,15 +1,18 @@
 //
-//  ViewController.h
+//  Song.m
 //  Songs
 //
 //  Created by DmitrJuga on 06.07.15.
 //  Copyright (c) 2015 Dmitriy Dolotenko. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "Song.h"
 
-@interface ViewController : UIViewController
 
+@implementation Song
+
+@dynamic id;
+@dynamic author;
+@dynamic label;
 
 @end
-

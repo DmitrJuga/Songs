@@ -1,25 +1,98 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6211" systemVersion="14A298i" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="WS0-AS-rjt">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6204"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="ufC-wZ-h7g">
+        <!--Песни-->
+        <scene sceneID="euX-BE-i79">
             <objects>
-                <viewController id="vXZ-lx-hvc" customClass="ViewController" customModuleProvider="" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jyV-Pf-zRb"/>
-                        <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
+                <tableViewController id="UiK-Al-yq0" customClass="SongsViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="30U-cW-yJz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SongCell" id="9vs-gd-yWB" customClass="SongTableViewCell">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9vs-gd-yWB" id="kVw-8d-ChO">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Артист" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nm9-Jv-zUA">
+                                            <rect key="frame" x="8" y="24" width="304" height="15"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Песня" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZHT-Yh-dkE">
+                                            <rect key="frame" x="8" y="4" width="304" height="20"/>
+                                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                            <color key="textColor" red="0.0" green="0.25098040699958801" blue="0.50196081399917603" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottomMargin" secondItem="Nm9-Jv-zUA" secondAttribute="bottom" constant="-8" id="42Z-Br-vma"/>
+                                        <constraint firstAttribute="leadingMargin" secondItem="ZHT-Yh-dkE" secondAttribute="leading" id="5Zk-Bi-Fdz"/>
+                                        <constraint firstItem="Nm9-Jv-zUA" firstAttribute="trailing" secondItem="kVw-8d-ChO" secondAttribute="trailingMargin" id="czG-PD-xAN"/>
+                                        <constraint firstItem="Nm9-Jv-zUA" firstAttribute="top" secondItem="ZHT-Yh-dkE" secondAttribute="bottom" id="eyG-h7-erc"/>
+                                        <constraint firstItem="Nm9-Jv-zUA" firstAttribute="leading" secondItem="kVw-8d-ChO" secondAttribute="leadingMargin" id="f3f-85-gYM"/>
+                                        <constraint firstItem="ZHT-Yh-dkE" firstAttribute="top" secondItem="kVw-8d-ChO" secondAttribute="topMargin" constant="-4" id="i6r-UX-eKj"/>
+                                        <constraint firstItem="ZHT-Yh-dkE" firstAttribute="leading" secondItem="kVw-8d-ChO" secondAttribute="leadingMargin" id="iGQ-8y-W2H"/>
+                                        <constraint firstItem="ZHT-Yh-dkE" firstAttribute="trailing" secondItem="kVw-8d-ChO" secondAttribute="trailingMargin" id="qbI-9Q-g9R"/>
+                                    </constraints>
+                                    <variation key="default">
+                                        <mask key="constraints">
+                                            <exclude reference="iGQ-8y-W2H"/>
+                                            <exclude reference="42Z-Br-vma"/>
+                                        </mask>
+                                    </variation>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="songAuthor" destination="Nm9-Jv-zUA" id="pLY-WK-U0P"/>
+                                    <outlet property="songTitle" destination="ZHT-Yh-dkE" id="LvA-HB-d4l"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="UiK-Al-yq0" id="rdd-lx-oL5"/>
+                            <outlet property="delegate" destination="UiK-Al-yq0" id="f11-ql-sNv"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Песни" id="FBJ-P4-az1">
+                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="LTz-2g-HYE">
+                            <connections>
+                                <action selector="refreshBtnPressed:" destination="UiK-Al-yq0" id="NHl-Lp-jx5"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IiD-Ro-jFE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="679" y="942"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="HT5-SN-QsU">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="WS0-AS-rjt" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="xMY-5n-Har">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="UiK-Al-yq0" kind="relationship" relationship="rootViewController" id="pe8-xb-hX9"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="v7Q-ZZ-bBS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="235" y="942"/>
         </scene>
     </scenes>
 </document>
