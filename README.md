@@ -4,16 +4,16 @@
  
 > Приложение должно скачивать песни, 
 
-Работа с сетью - с помощью AFNetworking. Взаимодействие с серверным API вынесено в класс `SongsAPIManager`.
+Скачивает. Работа с сетью - с помощью AFNetworking. Взаимодействие с серверным API вынесено в класс `SongsAPIManager`.
 
 > сохранять их в БД (желательно, CoreData) 
     
-БД CoreData. Работа с CoreData с помощью MagicalRecord.   
-В  CoreData создана одна сущность Song c атрибутами, соответствующими JSON
+Сохраняет в БД CoreData. Работа с CoreData с помощью MagicalRecord.   
+В  CoreData создана одна сущность Song c атрибутами, соответствующими JSON.
 
 > и выводить в виде таблицы, где каждая ячейка состоит из Названия + Автора. 
 
-Использую UITableViewController и кастомную ячейку (класс `SongTableViewCell`)
+Использую `UITableViewController` и кастомную ячейку (класс `SongTableViewCell`)
 
 > Так же необходимо предусмотреть жест PullToRefresh, который обновляет с сервера данные таблицы. 
 
@@ -28,7 +28,7 @@
 
 > Простым reloadData, естественно, не надо этот вопрос решать. Должны анимировано удаляться и добавляться ячейки. 
 
-Удаляются и добавляются анимировано (`UITableViewRowAnimationMiddle`) в том же методе `mergeSongsFromList:`.
+Удаляются и добавляются анимировано (`UITableViewRowAnimationXXXXX`) в том же методе `mergeSongsFromList:`.
 
 > Приветствуется использование third-party инструментов, ускоряющих работу.
 
