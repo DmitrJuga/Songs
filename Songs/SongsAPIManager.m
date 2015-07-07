@@ -9,8 +9,8 @@
 #import "SongsAPIManager.h"
 #import "AFNetworking/AFNetworking.h"
 
-#define     SERVER_URL          @"http://kilograpp.com:8080/songs/api/"
-#define     GET_SONGS_METHOD    @"songs"
+#define     SERVER_URL      @"http://kilograpp.com:8080/songs/api/"
+#define     SONGS_METHOD    @"songs"
 
 @interface SongsAPIManager()
 
@@ -40,7 +40,7 @@
 
 // Осуществляет загрузку данных
 - (void)loadSongs {
-    [self.manager GET:GET_SONGS_METHOD
+    [self.manager GET:SONGS_METHOD
            parameters:nil
               success:^(AFHTTPRequestOperation *operation, id responseObject) {
                   if ([responseObject isKindOfClass:[NSArray class]]) {

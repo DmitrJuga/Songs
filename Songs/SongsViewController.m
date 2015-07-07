@@ -56,18 +56,27 @@
 
 // Объединение списков: сохранённых песен и загруженных
 - (void)mergeSongsFromList:(NSArray *)jsonList {
-    
+
     NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:jsonList];
     
     // Сравнение списков
+    NSMutableArray *updateIndexPaths = [[NSMutableArray alloc] init];
     NSMutableIndexSet *deleteIndexSet = [[NSMutableIndexSet alloc] init];
     for (NSUInteger songListIdx = 0; songListIdx < self.songList.count; songListIdx++) {
         Song *song = self.songList[songListIdx];
         BOOL isNeedToDelete = YES;
         for (NSUInteger newListIdx = 0; newListIdx < newList.count; newListIdx++) {
             NSDictionary *jsonSong = newList[newListIdx];
-            // если песня присутствует в новом списке - удаляем из нового списка, оставляем в основном
+            // если песня присутствует в новом списке
             if ([song.id isEqualToNumber:jsonSong[@"id"]]) {
+                // проверяем, не изменились ли данные, при необходимости обновляем
+                if (![song.label isEqualToString:jsonSong[@"label"]] ||
+                    ![song.author isEqualToString:jsonSong[@"author"]]) {
+                    song.label = jsonSong[@"label"];
+                    song.author = jsonSong[@"author"];
+                    [updateIndexPaths addObject:[NSIndexPath indexPathForRow:songListIdx inSection:0]];
+                }
+                //удаляем из нового списка, оставляем в основном
                 [newList removeObjectAtIndex:newListIdx];
                 isNeedToDelete = NO;
                 break;
@@ -96,21 +105,26 @@
         [self.songList addObject:song];
         [insertIndexPaths addObject:[NSIndexPath indexPathForRow:self.songList.count - 1 inSection:0]];
     }
-    
-    if (deleteIndexPaths.count > 0 || insertIndexPaths.count > 0) {
+
+    if (updateIndexPaths.count > 0 || deleteIndexPaths.count > 0 || insertIndexPaths.count > 0) {
         // сохранение изменений в БД
         [[NSManagedObjectContext MR_defaultContext] MR_saveToPersistentStoreWithCompletion:nil];
         
-        // хак!!! задержка для завершения анимации RefreshControl-а, иначе - странные скачки ((
-        CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.4, false);
-        
-        // обновление tableView c анимацией
-        [self.tableView beginUpdates];
-        [self.tableView deleteRowsAtIndexPaths:deleteIndexPaths
-                              withRowAnimation:UITableViewRowAnimationMiddle];
-        [self.tableView insertRowsAtIndexPaths:insertIndexPaths
-                              withRowAnimation:UITableViewRowAnimationMiddle];
-        [self.tableView endUpdates];
+        // (хак!) задержка для завершения анимации RefreshControl-а, иначе - дёргается((
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            // обновление tableView c анимацией
+            [self.tableView beginUpdates];
+            // update
+            [self.tableView reloadRowsAtIndexPaths:updateIndexPaths
+                                  withRowAnimation:UITableViewRowAnimationMiddle];
+            // delete
+            [self.tableView deleteRowsAtIndexPaths:deleteIndexPaths
+                                  withRowAnimation:UITableViewRowAnimationLeft];
+            // add
+            [self.tableView insertRowsAtIndexPaths:insertIndexPaths
+                                  withRowAnimation:UITableViewRowAnimationRight];
+            [self.tableView endUpdates];
+        });
     }
 }
 
