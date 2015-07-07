@@ -228,6 +228,7 @@
 				TargetAttributes = {
 					1D4A2DE51B4AB16B00050506 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 8PXVK96LC5;
 					};
 					1D4A2DFE1B4AB16B00050506 = {
 						CreatedOnToolsVersion = 6.4;
@@ -443,14 +444,17 @@
 		};
 		1D4A2E0A1B4AB16B00050506 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DF90F9D0EF640F0B1A36A47E /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 65EDFAA32C27115F96D08405 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Songs/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.dmitrjuga.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -459,11 +463,14 @@
 			baseConfigurationReference = 65EDFAA32C27115F96D08405 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Songs/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "ru.dmitrjuga.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

@@ -58,7 +58,7 @@
 - (void)mergeSongsFromList:(NSArray *)jsonList {
     
     NSMutableArray *newList = [[NSMutableArray alloc] initWithArray:jsonList];
-
+    
     // Сравнение списков
     NSMutableIndexSet *deleteIndexSet = [[NSMutableIndexSet alloc] init];
     for (NSUInteger songListIdx = 0; songListIdx < self.songList.count; songListIdx++) {
@@ -67,7 +67,7 @@
         for (NSUInteger newListIdx = 0; newListIdx < newList.count; newListIdx++) {
             NSDictionary *jsonSong = newList[newListIdx];
             // если песня присутствует в новом списке - удаляем из нового списка, оставляем в основном
-            if (song.id == jsonSong[@"id"]) {
+            if ([song.id isEqualToNumber:jsonSong[@"id"]]) {
                 [newList removeObjectAtIndex:newListIdx];
                 isNeedToDelete = NO;
                 break;
